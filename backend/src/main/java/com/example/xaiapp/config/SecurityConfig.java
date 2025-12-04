@@ -34,6 +34,11 @@ public class SecurityConfig {
     
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+    
     @Value("${app.cors.allowed-origins}")
     private String allowedOrigins;
     

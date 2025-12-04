@@ -35,6 +35,8 @@ import com.example.xaiapp.entity.MLModel;
 import com.example.xaiapp.repository.DatasetRepository;
 import com.example.xaiapp.repository.MLModelRepository;
 import com.example.xaiapp.factory.AlgorithmFactory;
+import com.example.xaiapp.factory.ModelFactory;
+import com.example.xaiapp.config.MLTrainingConfig;
 import com.example.xaiapp.strategy.ClassificationStrategy;
 import com.example.xaiapp.strategy.RegressionStrategy;
 import com.example.xaiapp.exception.DatasetNotFoundException;
@@ -47,11 +49,29 @@ import com.example.xaiapp.exception.ModelNotFoundException;
 @Transactional
 public class ModelService {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ModelService.class);
+    
     private final MLModelRepository modelRepository;
     private final DatasetRepository datasetRepository;
+    private final ModelFactory modelFactory;
     private final AlgorithmFactory algorithmFactory;
+    private final MLTrainingConfig mlConfig;
     private final ClassificationStrategy classificationStrategy;
     private final RegressionStrategy regressionStrategy;
+    
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public ModelService(MLModelRepository modelRepository, DatasetRepository datasetRepository, 
+                       ModelFactory modelFactory, AlgorithmFactory algorithmFactory, MLTrainingConfig mlConfig,
+                       ClassificationStrategy classificationStrategy, RegressionStrategy regressionStrategy) {
+        this.modelRepository = modelRepository;
+        this.datasetRepository = datasetRepository;
+        this.modelFactory = modelFactory;
+        this.algorithmFactory = algorithmFactory;
+        this.mlConfig = mlConfig;
+        this.classificationStrategy = classificationStrategy;
+        this.regressionStrategy = regressionStrategy;
+    }
     
     @Value("${app.file.upload-dir}")
     private String uploadDir;

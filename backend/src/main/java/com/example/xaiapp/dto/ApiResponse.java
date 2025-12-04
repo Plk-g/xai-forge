@@ -19,19 +19,40 @@ public class ApiResponse<T> {
     private String message;
     private T data;
     
+    // Manual setters (Lombok not generating them)
+    public void setSuccess(boolean success) { this.success = success; }
+    public void setMessage(String message) { this.message = message; }
+    public void setData(T data) { this.data = data; }
+    
     public static <T> ApiResponse<T> success(String message) {
-        return new ApiResponse<>(true, message, null);
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(true);
+        response.setMessage(message);
+        response.setData(null);
+        return response;
     }
     
     public static <T> ApiResponse<T> success(String message, T data) {
-        return new ApiResponse<>(true, message, data);
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(true);
+        response.setMessage(message);
+        response.setData(data);
+        return response;
     }
     
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(false, message, null);
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(false);
+        response.setMessage(message);
+        response.setData(null);
+        return response;
     }
     
     public static <T> ApiResponse<T> error(String message, T data) {
-        return new ApiResponse<>(false, message, data);
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setSuccess(false);
+        response.setMessage(message);
+        response.setData(data);
+        return response;
     }
 }

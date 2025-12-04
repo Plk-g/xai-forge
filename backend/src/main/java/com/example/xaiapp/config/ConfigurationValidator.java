@@ -28,6 +28,9 @@ import java.nio.file.Paths;
 @Slf4j
 public class ConfigurationValidator {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationValidator.class);
+    
     @Value("${app.file.upload-dir}")
     private String uploadDir;
     

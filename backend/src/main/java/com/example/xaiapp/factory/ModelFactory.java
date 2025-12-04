@@ -33,8 +33,17 @@ import java.util.Map;
 @Slf4j
 public class ModelFactory {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ModelFactory.class);
+    
     private final ClassificationStrategy classificationStrategy;
     private final RegressionStrategy regressionStrategy;
+    
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public ModelFactory(ClassificationStrategy classificationStrategy, RegressionStrategy regressionStrategy) {
+        this.classificationStrategy = classificationStrategy;
+        this.regressionStrategy = regressionStrategy;
+    }
     
     /**
      * Create a trained model using the appropriate strategy

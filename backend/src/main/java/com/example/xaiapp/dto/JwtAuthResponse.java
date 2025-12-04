@@ -19,4 +19,9 @@ public class JwtAuthResponse {
     private String tokenType = "Bearer";
     private Long userId;
     private String username;
+    
+    // Manual setters (Lombok not generating them)
+    public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public void setUsername(String username) { this.username = username; }
 }

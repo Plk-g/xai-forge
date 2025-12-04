@@ -22,6 +22,12 @@ public class ExplanationResponse {
     private Map<String, String> inputData;
     private String explanationText;
     
+    // Manual setters (Lombok not generating them)
+    public void setPrediction(String prediction) { this.prediction = prediction; }
+    public void setFeatureContributions(List<FeatureContribution> featureContributions) { this.featureContributions = featureContributions; }
+    public void setInputData(Map<String, String> inputData) { this.inputData = inputData; }
+    public void setExplanationText(String explanationText) { this.explanationText = explanationText; }
+    
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -29,5 +35,13 @@ public class ExplanationResponse {
         private String featureName;
         private Double contribution;
         private String direction; // "positive" or "negative"
+        
+        // Manual getters and setters (Lombok not generating them)
+        public String getFeatureName() { return featureName; }
+        public void setFeatureName(String featureName) { this.featureName = featureName; }
+        public Double getContribution() { return contribution; }
+        public void setContribution(Double contribution) { this.contribution = contribution; }
+        public String getDirection() { return direction; }
+        public void setDirection(String direction) { this.direction = direction; }
     }
 }

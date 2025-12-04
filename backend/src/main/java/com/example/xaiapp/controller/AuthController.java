@@ -34,6 +34,15 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, 
+                         PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+    }
+    
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody UserDto userDto) {
         try {

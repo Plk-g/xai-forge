@@ -16,11 +16,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -51,6 +55,16 @@ public class User implements UserDetails {
     
     // UserDetails implementation
     @Override
+    public String getUsername() {
+        return username;
+    }
+    
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
@@ -74,4 +88,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    
+    // Manual getters and setters (Lombok not generating them)
+    public Long getId() { return id; }
+    public void setUsername(String username) { this.username = username; }
+    public void setEmail(String email) { this.email = email; }
+    public void setPassword(String password) { this.password = password; }
 }

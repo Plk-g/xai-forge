@@ -46,8 +46,17 @@ import com.example.xaiapp.exception.DatasetParsingException;
 @Transactional
 public class DatasetService {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DatasetService.class);
+    
     private final DatasetRepository datasetRepository;
     private final UserRepository userRepository;
+    
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public DatasetService(DatasetRepository datasetRepository, UserRepository userRepository) {
+        this.datasetRepository = datasetRepository;
+        this.userRepository = userRepository;
+    }
     
     @Value("${app.file.upload-dir}")
     private String uploadDir;

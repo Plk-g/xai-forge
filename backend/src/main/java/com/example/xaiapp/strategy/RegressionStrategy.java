@@ -32,6 +32,9 @@ import java.util.Map;
 @Slf4j
 public class RegressionStrategy implements TrainingStrategy {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RegressionStrategy.class);
+    
     private final MLTrainingConfig mlConfig;
     
     public RegressionStrategy(MLTrainingConfig mlConfig) {

@@ -28,8 +28,17 @@ import org.springframework.lang.NonNull;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
+    
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsService userDetailsService) {
+        this.tokenProvider = tokenProvider;
+        this.userDetailsService = userDetailsService;
+    }
     
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, 

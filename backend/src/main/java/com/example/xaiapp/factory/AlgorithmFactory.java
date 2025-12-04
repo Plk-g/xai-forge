@@ -32,6 +32,9 @@ import java.nio.file.Path;
 @Slf4j
 public class AlgorithmFactory {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AlgorithmFactory.class);
+    
     /**
      * Create a CSV loader for the specified model type
      * 

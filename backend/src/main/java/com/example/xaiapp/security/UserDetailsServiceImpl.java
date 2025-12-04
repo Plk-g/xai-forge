@@ -21,6 +21,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     
     private final UserRepository userRepository;
     
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

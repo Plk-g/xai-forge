@@ -11,11 +11,15 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "ml_models")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MLModel {
@@ -64,4 +68,21 @@ public class MLModel {
         CLASSIFICATION,
         REGRESSION
     }
+    
+    // Manual getters and setters (Lombok not generating them)
+    public Long getId() { return id; }
+    public String getModelName() { return modelName; }
+    public void setModelName(String modelName) { this.modelName = modelName; }
+    public ModelType getModelType() { return modelType; }
+    public void setModelType(ModelType modelType) { this.modelType = modelType; }
+    public String getSerializedModelPath() { return serializedModelPath; }
+    public void setSerializedModelPath(String serializedModelPath) { this.serializedModelPath = serializedModelPath; }
+    public String getTargetVariable() { return targetVariable; }
+    public void setTargetVariable(String targetVariable) { this.targetVariable = targetVariable; }
+    public List<String> getFeatureNames() { return featureNames; }
+    public void setFeatureNames(List<String> featureNames) { this.featureNames = featureNames; }
+    public Dataset getDataset() { return dataset; }
+    public void setDataset(Dataset dataset) { this.dataset = dataset; }
+    public Double getAccuracy() { return accuracy; }
+    public void setAccuracy(Double accuracy) { this.accuracy = accuracy; }
 }

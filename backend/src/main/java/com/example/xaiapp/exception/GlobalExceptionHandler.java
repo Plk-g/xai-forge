@@ -40,6 +40,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    
     /**
      * Handle custom XAI exceptions
      */
@@ -335,5 +338,60 @@ public class GlobalExceptionHandler {
         private String message;
         private String userMessage;
         private String path;
+        
+        // Manual setters (Lombok not generating them)
+        public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+        public void setErrorCode(String errorCode) { this.errorCode = errorCode; }
+        public void setMessage(String message) { this.message = message; }
+        public void setUserMessage(String userMessage) { this.userMessage = userMessage; }
+        public void setPath(String path) { this.path = path; }
+        
+        // Manual builder (Lombok @Builder not generating it)
+        public static ErrorDetailsBuilder builder() {
+            return new ErrorDetailsBuilder();
+        }
+        
+        public static class ErrorDetailsBuilder {
+            private LocalDateTime timestamp;
+            private String errorCode;
+            private String message;
+            private String userMessage;
+            private String path;
+            
+            public ErrorDetailsBuilder timestamp(LocalDateTime timestamp) {
+                this.timestamp = timestamp;
+                return this;
+            }
+            
+            public ErrorDetailsBuilder errorCode(String errorCode) {
+                this.errorCode = errorCode;
+                return this;
+            }
+            
+            public ErrorDetailsBuilder message(String message) {
+                this.message = message;
+                return this;
+            }
+            
+            public ErrorDetailsBuilder userMessage(String userMessage) {
+                this.userMessage = userMessage;
+                return this;
+            }
+            
+            public ErrorDetailsBuilder path(String path) {
+                this.path = path;
+                return this;
+            }
+            
+            public ErrorDetails build() {
+                ErrorDetails details = new ErrorDetails();
+                details.setTimestamp(timestamp);
+                details.setErrorCode(errorCode);
+                details.setMessage(message);
+                details.setUserMessage(userMessage);
+                details.setPath(path);
+                return details;
+            }
+        }
     }
 }

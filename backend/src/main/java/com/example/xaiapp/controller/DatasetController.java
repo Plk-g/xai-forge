@@ -26,6 +26,11 @@ public class DatasetController {
     
     private final DatasetService datasetService;
     
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public DatasetController(DatasetService datasetService) {
+        this.datasetService = datasetService;
+    }
+    
     @PostMapping("/upload")
     public ResponseEntity<?> uploadDataset(@RequestParam("file") MultipartFile file,
                                          Authentication authentication) {

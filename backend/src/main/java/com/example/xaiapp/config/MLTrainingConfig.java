@@ -63,11 +63,25 @@ public class MLTrainingConfig {
         private int epochs = 10;
         private int minibatchSize = 1;
         private long maxTrainingTime = 300000; // 5 minutes
+        
+        // Manual getters (Lombok not generating them)
+        public double getLearningRate() { return learningRate; }
+        public double getInitialLearningRate() { return initialLearningRate; }
+        public int getEpochs() { return epochs; }
+        public int getMinibatchSize() { return minibatchSize; }
+        public long getMaxTrainingTime() { return maxTrainingTime; }
     }
     
     @Data
     public static class ClassificationConfig {
         private long maxTrainingTime = 300000; // 5 minutes
         // Additional classification parameters can be added here
+        
+        // Manual getters (Lombok not generating them)
+        public long getMaxTrainingTime() { return maxTrainingTime; }
     }
+    
+    // Manual getters (Lombok not generating them)
+    public RegressionConfig getRegression() { return regression; }
+    public ClassificationConfig getClassification() { return classification; }
 }

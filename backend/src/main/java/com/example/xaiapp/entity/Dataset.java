@@ -11,11 +11,15 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "datasets")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dataset {
@@ -52,4 +56,18 @@ public class Dataset {
     protected void onCreate() {
         uploadDate = LocalDateTime.now();
     }
+    
+    // Manual getters and setters (Lombok not generating them)
+    public Long getId() { return id; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+    public String getFilePath() { return filePath; }
+    public void setFilePath(String filePath) { this.filePath = filePath; }
+    public LocalDateTime getUploadDate() { return uploadDate; }
+    public List<String> getHeaders() { return headers; }
+    public void setHeaders(List<String> headers) { this.headers = headers; }
+    public Long getRowCount() { return rowCount; }
+    public void setRowCount(Long rowCount) { this.rowCount = rowCount; }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; }
 }

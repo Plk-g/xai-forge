@@ -28,6 +28,9 @@ import java.util.Map;
 @Slf4j
 public class ClassificationStrategy implements TrainingStrategy {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClassificationStrategy.class);
+    
     @Override
     public Model<?> train(MutableDataset<?> dataset, Map<String, Object> parameters) throws Exception {
         log.info("Starting classification training with Logistic Regression");

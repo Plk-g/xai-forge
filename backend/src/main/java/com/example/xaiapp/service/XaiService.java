@@ -33,8 +33,17 @@ import com.example.xaiapp.config.XaiConfig;
 @Slf4j
 public class XaiService {
     
+    // Manual log field (Lombok @Slf4j not generating it)
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XaiService.class);
+    
     private final ModelService modelService;
     private final XaiConfig xaiConfig;
+    
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public XaiService(ModelService modelService, XaiConfig xaiConfig) {
+        this.modelService = modelService;
+        this.xaiConfig = xaiConfig;
+    }
     
     public PredictionResponse predict(Long modelId, Map<String, String> inputData, Long userId) {
         try {

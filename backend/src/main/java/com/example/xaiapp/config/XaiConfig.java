@@ -102,4 +102,12 @@ public class XaiConfig {
         
         return 1.0; // Default multiplier
     }
+    
+    // Manual getters (Lombok not generating them)
+    public double getRegressionBaseFactor() { return regressionBaseFactor; }
+    public double getClassificationBaseFactor() { return classificationBaseFactor; }
+    public Map<String, Double> getFeatureMultipliers() { return featureMultipliers; }
+    public boolean isEnableFallbackExplanation() { return enableFallbackExplanation; }
+    public int getMaxFeaturesInExplanation() { return maxFeaturesInExplanation; }
+    public double getMinContributionThreshold() { return minContributionThreshold; }
 }

@@ -33,6 +33,12 @@ public class ModelController {
     private final ModelService modelService;
     private final XaiService xaiService;
     
+    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    public ModelController(ModelService modelService, XaiService xaiService) {
+        this.modelService = modelService;
+        this.xaiService = xaiService;
+    }
+    
     @PostMapping("/train")
     public ResponseEntity<?> trainModel(@Valid @RequestBody TrainRequestDto request,
                                       Authentication authentication) {

@@ -21,4 +21,8 @@ public class LoginRequest {
     
     @NotBlank(message = "Password is required")
     private String password;
+    
+    // Manual getters (Lombok not generating them)
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
 }
