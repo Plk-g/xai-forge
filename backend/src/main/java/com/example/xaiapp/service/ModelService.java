@@ -44,7 +44,6 @@ import com.example.xaiapp.exception.ModelTrainingException;
 import com.example.xaiapp.exception.ModelNotFoundException;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class ModelService {
@@ -60,7 +59,7 @@ public class ModelService {
     private final ClassificationStrategy classificationStrategy;
     private final RegressionStrategy regressionStrategy;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public ModelService(MLModelRepository modelRepository, DatasetRepository datasetRepository, 
                        ModelFactory modelFactory, AlgorithmFactory algorithmFactory, MLTrainingConfig mlConfig,
                        ClassificationStrategy classificationStrategy, RegressionStrategy regressionStrategy) {

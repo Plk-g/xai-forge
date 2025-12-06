@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
@@ -34,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsService userDetailsService) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;

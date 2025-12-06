@@ -16,12 +16,11 @@ import com.example.xaiapp.entity.User;
 import com.example.xaiapp.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     
     private final UserRepository userRepository;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

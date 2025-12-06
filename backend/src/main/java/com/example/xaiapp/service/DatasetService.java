@@ -41,7 +41,6 @@ import com.example.xaiapp.exception.DatasetNotFoundException;
 import com.example.xaiapp.exception.DatasetParsingException;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class DatasetService {
@@ -52,7 +51,7 @@ public class DatasetService {
     private final DatasetRepository datasetRepository;
     private final UserRepository userRepository;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public DatasetService(DatasetRepository datasetRepository, UserRepository userRepository) {
         this.datasetRepository = datasetRepository;
         this.userRepository = userRepository;

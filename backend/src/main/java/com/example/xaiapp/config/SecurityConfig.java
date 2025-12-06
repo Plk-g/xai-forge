@@ -29,12 +29,11 @@ import com.example.xaiapp.security.JwtAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
     
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }

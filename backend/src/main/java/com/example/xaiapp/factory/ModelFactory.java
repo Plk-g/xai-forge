@@ -29,7 +29,6 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ModelFactory {
     
@@ -39,7 +38,7 @@ public class ModelFactory {
     private final ClassificationStrategy classificationStrategy;
     private final RegressionStrategy regressionStrategy;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public ModelFactory(ClassificationStrategy classificationStrategy, RegressionStrategy regressionStrategy) {
         this.classificationStrategy = classificationStrategy;
         this.regressionStrategy = regressionStrategy;

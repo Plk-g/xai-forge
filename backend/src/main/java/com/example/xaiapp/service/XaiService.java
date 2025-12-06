@@ -29,7 +29,6 @@ import com.example.xaiapp.entity.MLModel;
 import com.example.xaiapp.config.XaiConfig;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class XaiService {
     
@@ -39,7 +38,7 @@ public class XaiService {
     private final ModelService modelService;
     private final XaiConfig xaiConfig;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
+    // Manual constructor (Lombok @RequiredArgsConstructor not working with Java 24)
     public XaiService(ModelService modelService, XaiConfig xaiConfig) {
         this.modelService = modelService;
         this.xaiConfig = xaiConfig;
