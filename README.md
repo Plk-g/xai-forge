@@ -25,14 +25,34 @@
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Option 1: Docker (Recommended - Out-of-Box) 🐳
 
+**Prerequisites**: Docker and Docker Compose
+
+```bash
+# Clone the repository
+git clone <your-repository-url>
+cd xai-forge
+
+# Start all services (backend, frontend, database)
+docker-compose up --build
+
+# Access the application:
+# - Frontend: http://localhost:3000
+# - Backend API: http://localhost:8080
+```
+
+That's it! The application is fully containerized and ready to use.
+
+### Option 2: Manual Setup
+
+**Prerequisites**:
 - **Java 17+** - Backend runtime
 - **Node.js 18+** - Frontend development
 - **PostgreSQL 14+** - Database
 - **Maven 3.8+** - Backend build tool
 
-### Installation
+**Installation**:
 
 1. **Clone the repository**
    ```bash
