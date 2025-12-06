@@ -100,7 +100,7 @@ public class TrainRequestBuilder {
      * @return This builder instance
      */
     public TrainRequestBuilder setFeatureNames(List<String> featureNames) {
-        this.featureNames = new ArrayList<>(featureNames);
+        this.featureNames = featureNames == null ? null : new ArrayList<>(featureNames);
         return this;
     }
     
