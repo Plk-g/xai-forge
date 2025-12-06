@@ -140,7 +140,13 @@ public class TrainRequestBuilder {
      */
     public TrainRequestDto build() {
         validate();
-        return new TrainRequestDto(datasetId, modelName, targetVariable, featureNames, modelType);
+        TrainRequestDto dto = new TrainRequestDto();
+        dto.setDatasetId(datasetId);
+        dto.setModelName(modelName);
+        dto.setTargetVariable(targetVariable);
+        dto.setFeatureNames(featureNames);
+        dto.setModelType(modelType);
+        return dto;
     }
     
     /**

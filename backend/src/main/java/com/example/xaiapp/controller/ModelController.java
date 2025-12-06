@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import com.example.xaiapp.dto.ApiResponse;
 import com.example.xaiapp.dto.ExplanationResponse;
 import com.example.xaiapp.dto.PredictionResponse;
@@ -26,14 +25,12 @@ import com.example.xaiapp.exception.ModelTrainingException;
 
 @RestController
 @RequestMapping("/api/models")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ModelController {
     
     private final ModelService modelService;
     private final XaiService xaiService;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
     public ModelController(ModelService modelService, XaiService xaiService) {
         this.modelService = modelService;
         this.xaiService = xaiService;

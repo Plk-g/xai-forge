@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import lombok.RequiredArgsConstructor;
 import com.example.xaiapp.dto.ApiResponse;
 import com.example.xaiapp.dto.DatasetDto;
 import com.example.xaiapp.entity.User;
@@ -20,13 +19,11 @@ import com.example.xaiapp.service.DatasetService;
 
 @RestController
 @RequestMapping("/api/datasets")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class DatasetController {
     
     private final DatasetService datasetService;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
     public DatasetController(DatasetService datasetService) {
         this.datasetService = datasetService;
     }

@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import com.example.xaiapp.dto.ApiResponse;
 import com.example.xaiapp.dto.JwtAuthResponse;
 import com.example.xaiapp.dto.LoginRequest;
@@ -25,7 +24,6 @@ import com.example.xaiapp.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AuthController {
     
@@ -34,7 +32,6 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     
-    // Manual constructor (Lombok @RequiredArgsConstructor not generating it)
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, 
                          PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;

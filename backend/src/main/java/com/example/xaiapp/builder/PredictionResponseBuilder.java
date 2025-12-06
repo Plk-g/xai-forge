@@ -118,7 +118,12 @@ public class PredictionResponseBuilder {
      */
     public PredictionResponse build() {
         validate();
-        return new PredictionResponse(prediction, confidence, probabilities, inputData);
+        PredictionResponse response = new PredictionResponse();
+        response.setPrediction(prediction);
+        response.setConfidence(confidence);
+        response.setProbabilities(probabilities);
+        response.setInputData(inputData);
+        return response;
     }
     
     /**
