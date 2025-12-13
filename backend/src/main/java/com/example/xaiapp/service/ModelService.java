@@ -120,20 +120,31 @@ public class ModelService {
     private MutableDataset<?> loadDatasetFromCSV(Dataset dataset, TrainRequestDto request) throws Exception {
         Path csvPath = Paths.get(dataset.getFilePath());
         
-        // Create feature list
-        List<String> featureNames = new ArrayList<>(request.getFeatureNames());
-        featureNames.add(request.getTargetVariable());
+        log.info("Loading dataset from CSV: {}", csvPath);
+        log.info("Target variable: {}, Feature names: {}", request.getTargetVariable(), request.getFeatureNames());
         
         // Load data based on model type
         if (request.getModelType().equals("CLASSIFICATION")) {
-            LabelFactory labelFactory = new LabelFactory();
-            CSVLoader<Label> csvLoader = new CSVLoader<>(labelFactory);
-            DataSource<Label> dataSource = csvLoader.loadDataSource(csvPath, request.getTargetVariable(), featureNames.toArray(new String[0]));
-            return new MutableDataset<>(dataSource);
+            try {
+                LabelFactory labelFactory = new LabelFactory();
+                CSVLoader<Label> csvLoader = new CSVLoader<>(labelFactory);
+                // Only pass feature names (not target variable) to loadDataSource
+                // The target variable is specified separately
+                DataSource<Label> dataSource = csvLoader.loadDataSource(csvPath, request.getTargetVariable(), request.getFeatureNames().toArray(new String[0]));
+                return new MutableDataset<>(dataSource);
+            } catch (Exception e) {
+                log.error("Error loading classification dataset: {}", e.getMessage(), e);
+                throw new IllegalArgumentException("Failed to load dataset: " + e.getMessage(), e);
+            }
         } else {
             // For regression, use AlgorithmFactory to load data
-            return algorithmFactory.loadDatasetFromCSV(csvPath, request.getTargetVariable(), 
-                request.getFeatureNames(), MLModel.ModelType.REGRESSION);
+            try {
+                return algorithmFactory.loadDatasetFromCSV(csvPath, request.getTargetVariable(), 
+                    request.getFeatureNames(), MLModel.ModelType.REGRESSION);
+            } catch (Exception e) {
+                log.error("Error loading regression dataset: {}", e.getMessage(), e);
+                throw new IllegalArgumentException("Failed to load dataset: " + e.getMessage(), e);
+            }
         }
     }
     
