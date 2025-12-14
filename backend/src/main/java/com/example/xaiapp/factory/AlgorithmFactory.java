@@ -1,9 +1,3 @@
-/**
- * @Author: Mukhil Sundararaj
- * @Date:   2025-10-24 12:14:38
- * @Last Modified by:   Mukhil Sundararaj
- * @Last Modified time: 2025-10-24 18:16:26
- */
 package com.example.xaiapp.factory;
 
 import com.example.xaiapp.entity.MLModel;
@@ -30,7 +24,6 @@ import java.nio.file.Path;
  * This factory provides methods for creating appropriate data loaders
  * and algorithms based on the model type and data characteristics.
  * 
- * @author Mukhil Sundararaj
  * @since 1.0.0
  */
 @Component

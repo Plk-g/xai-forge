@@ -1,9 +1,3 @@
-/**
- * @Author: Mukhil Sundararaj
- * @Date:   2025-09-04 16:08:06
- * @Last Modified by:   Mukhil Sundararaj
- * @Last Modified time: 2025-10-24 15:18:28
- */
 package com.example.xaiapp.controller;
 
 import java.util.List;

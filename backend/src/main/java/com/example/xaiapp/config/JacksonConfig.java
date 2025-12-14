@@ -1,8 +1,3 @@
-/**
- * Jackson Configuration for handling Hibernate lazy proxies
- * @Author: Auto-generated
- * @Date: 2025-12-13
- */
 package com.example.xaiapp.config;
 
 import org.springframework.context.annotation.Bean;
