@@ -33,10 +33,14 @@ const DashboardPage = () => {
         datasetAPI.getAll(),
         modelAPI.getAll(),
       ]);
-      setDatasets(datasetsResponse.data);
-      setModels(modelsResponse.data);
+      // Ensure we always set arrays, even if response.data is null or undefined
+      setDatasets(Array.isArray(datasetsResponse?.data) ? datasetsResponse.data : []);
+      setModels(Array.isArray(modelsResponse?.data) ? modelsResponse.data : []);
     } catch (err) {
       setError('Failed to load data: ' + (err.response?.data?.message || err.message));
+      // Ensure models and datasets are always arrays even on error
+      setModels([]);
+      setDatasets([]);
     } finally {
       setLoading(false);
     }

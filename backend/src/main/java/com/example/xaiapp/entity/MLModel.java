@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "ml_models")
@@ -51,6 +52,7 @@ public class MLModel {
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dataset_id", nullable = false)
+    @JsonIgnore
     private Dataset dataset;
     
     @Column(name = "accuracy")

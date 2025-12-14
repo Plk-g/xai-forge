@@ -21,8 +21,13 @@ import org.tribuo.*;
 import org.tribuo.classification.Label;
 import org.tribuo.classification.LabelFactory;
 import org.tribuo.classification.evaluation.LabelEvaluator;
-import org.tribuo.data.csv.CSVLoader;
-import org.tribuo.DataSource;
+import org.tribuo.data.csv.CSVDataSource;
+import org.tribuo.data.columnar.RowProcessor;
+import org.tribuo.data.columnar.FieldProcessor;
+import org.tribuo.data.columnar.processors.response.FieldResponseProcessor;
+import org.tribuo.data.columnar.processors.field.DoubleFieldProcessor;
+import java.util.HashMap;
+import java.util.Map;
 import org.tribuo.regression.Regressor;
 import org.tribuo.regression.evaluation.RegressionEvaluator;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +82,8 @@ public class ModelService {
     
     @Transactional(isolation = Isolation.REPEATABLE_READ, timeout = 300)
     public MLModel trainModel(TrainRequestDto request, Long userId) throws Exception {
+        log.info("Starting model training - User: {}, Model: {}, Dataset: {}", userId, request.getModelName(), request.getDatasetId());
+        
         // Get dataset with proper transaction isolation
         Dataset dataset = datasetRepository.findByIdAndOwnerId(request.getDatasetId(), userId)
             .orElseThrow(() -> new DatasetNotFoundException(request.getDatasetId()));
@@ -84,14 +91,18 @@ public class ModelService {
         // Check if model already exists for this dataset with pessimistic locking
         Optional<MLModel> existingModel = modelRepository.findByDataset(dataset);
         if (existingModel.isPresent()) {
+            log.warn("Model already exists for dataset {} - User: {}", request.getDatasetId(), userId);
             throw new ModelTrainingException("Model already exists for this dataset", 
                 "A model has already been trained for this dataset. Please delete the existing model first.");
         }
         
+        log.info("Loading dataset from CSV...");
         // Load and prepare data
         MutableDataset<?> tribuoDataset = loadDatasetFromCSV(dataset, request);
+        log.info("Dataset loaded successfully - {} examples, {} features", tribuoDataset.size(), tribuoDataset.getFeatureMap().size());
         
         // Train model based on type
+        log.info("Training {} model...", request.getModelType());
         Model<?> trainedModel;
         MLModel.ModelType modelType = MLModel.ModelType.valueOf(request.getModelType());
         
@@ -100,9 +111,12 @@ public class ModelService {
         } else {
             trainedModel = regressionStrategy.train(tribuoDataset, null);
         }
+        log.info("Model training completed successfully");
         
         // Serialize and save model
+        log.info("Serializing model...");
         String modelPath = serializeModel(trainedModel, request.getModelName());
+        log.info("Model serialized to: {}", modelPath);
         
         // Create MLModel entity
         MLModel mlModel = new MLModel();
@@ -127,20 +141,62 @@ public class ModelService {
         if (request.getModelType().equals("CLASSIFICATION")) {
             try {
                 LabelFactory labelFactory = new LabelFactory();
-                CSVLoader<Label> csvLoader = new CSVLoader<>(labelFactory);
-                // Only pass feature names (not target variable) to loadDataSource
-                // The target variable is specified separately
-                DataSource<Label> dataSource = csvLoader.loadDataSource(csvPath, request.getTargetVariable(), request.getFeatureNames().toArray(new String[0]));
-                return new MutableDataset<>(dataSource);
+                
+                // Get all columns and selected features
+                List<String> allColumns = new ArrayList<>(dataset.getHeaders());
+                List<String> selectedFeatures = new ArrayList<>(request.getFeatureNames());
+                selectedFeatures.remove(request.getTargetVariable());
+                
+                // Create response processor for target variable
+                // Constructor: FieldResponseProcessor(String fieldName, String outputName, OutputFactory<T>)
+                FieldResponseProcessor<Label> responseProcessor = new FieldResponseProcessor<Label>(
+                    request.getTargetVariable(), request.getTargetVariable(), labelFactory);
+                
+                // Create field processors map - only add selected features
+                Map<String, FieldProcessor> fieldProcessors = new HashMap<>();
+                for (String column : allColumns) {
+                    if (column.equals(request.getTargetVariable())) {
+                        // Skip target - it's handled by response processor
+                        continue;
+                    } else if (selectedFeatures.contains(column)) {
+                        // Add as feature (using DoubleFieldProcessor for numeric columns)
+                        fieldProcessors.put(column, new DoubleFieldProcessor(column));
+                    }
+                    // Unselected columns are simply not added to the map (they'll be skipped)
+                }
+                
+                // Create RowProcessor with response processor first, then field processors map
+                // Constructor: RowProcessor(ResponseProcessor<T>, Map<String, FieldProcessor>)
+                RowProcessor<Label> rowProcessor = new RowProcessor<Label>(responseProcessor, fieldProcessors);
+                
+                log.info("Target variable: {}, All columns: {}, Selected features: {}", 
+                    request.getTargetVariable(), allColumns, selectedFeatures);
+                
+                // Use CSVDataSource with RowProcessor (true = has header row)
+                CSVDataSource<Label> dataSource = new CSVDataSource<>(csvPath, rowProcessor, true);
+                MutableDataset<Label> loadedDataset = new MutableDataset<>(dataSource);
+                
+                log.info("Dataset loaded: {} examples, {} features", 
+                    loadedDataset.size(), loadedDataset.getFeatureMap().size());
+                
+                return loadedDataset;
             } catch (Exception e) {
                 log.error("Error loading classification dataset: {}", e.getMessage(), e);
+                log.error("CSV Path: {}, Target: {}, Features: {}", csvPath, request.getTargetVariable(), request.getFeatureNames());
+                e.printStackTrace();
                 throw new IllegalArgumentException("Failed to load dataset: " + e.getMessage(), e);
             }
         } else {
             // For regression, use AlgorithmFactory to load data
             try {
+                // Pass all columns (excluding target) so Tribuo can parse CSV correctly
+                // Then filter to use only selected features
+                List<String> allColumns = new ArrayList<>(dataset.getHeaders());
+                List<String> selectedFeatures = new ArrayList<>(request.getFeatureNames());
+                selectedFeatures.remove(request.getTargetVariable());
+                
                 return algorithmFactory.loadDatasetFromCSV(csvPath, request.getTargetVariable(), 
-                    request.getFeatureNames(), MLModel.ModelType.REGRESSION);
+                    selectedFeatures, MLModel.ModelType.REGRESSION, allColumns);
             } catch (Exception e) {
                 log.error("Error loading regression dataset: {}", e.getMessage(), e);
                 throw new IllegalArgumentException("Failed to load dataset: " + e.getMessage(), e);
@@ -178,7 +234,9 @@ public class ModelService {
     private Double calculateAccuracy(Model<?> model, MutableDataset<?> dataset) {
         try {
             // For classification, implement real evaluation
-            if (model.getOutputIDInfo().getDomain() instanceof org.tribuo.classification.LabelInfo) {
+            // Check if the model's output info is for classification by checking the class name
+            String outputInfoClassName = model.getOutputIDInfo().getClass().getName();
+            if (outputInfoClassName.contains("LabelInfo") || outputInfoClassName.contains("classification")) {
                 // Classification evaluation
                 @SuppressWarnings("unchecked")
                 Model<Label> labelModel = (Model<Label>) model;
@@ -233,13 +291,29 @@ public class ModelService {
     
     @Transactional(readOnly = true)
     public MLModel getModel(Long modelId, Long userId) {
-        return modelRepository.findByIdAndDatasetOwnerId(modelId, userId)
+        MLModel model = modelRepository.findByIdAndDatasetOwnerId(modelId, userId)
             .orElseThrow(() -> new ModelNotFoundException(modelId));
+        
+        // Explicitly initialize featureNames collection to force Hibernate to load it
+        if (model.getFeatureNames() != null) {
+            model.getFeatureNames().size(); // Force initialization
+        }
+        
+        return model;
     }
     
     @Transactional(readOnly = true)
     public List<MLModel> getUserModels(Long userId) {
-        return modelRepository.findByDatasetOwnerId(userId);
+        List<MLModel> models = modelRepository.findByDatasetOwnerId(userId);
+        
+        // Explicitly initialize featureNames collection for each model
+        for (MLModel model : models) {
+            if (model.getFeatureNames() != null) {
+                model.getFeatureNames().size(); // Force initialization
+            }
+        }
+        
+        return models;
     }
     
     @Transactional(isolation = Isolation.READ_COMMITTED)

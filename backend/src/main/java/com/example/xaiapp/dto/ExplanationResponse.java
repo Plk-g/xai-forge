@@ -21,12 +21,15 @@ public class ExplanationResponse {
     private List<FeatureContribution> featureContributions;
     private Map<String, String> inputData;
     private String explanationText;
+    private String warning; // Warning message if model is degenerate or explanations are approximate
     
     // Manual setters (Lombok not generating them)
     public void setPrediction(String prediction) { this.prediction = prediction; }
     public void setFeatureContributions(List<FeatureContribution> featureContributions) { this.featureContributions = featureContributions; }
     public void setInputData(Map<String, String> inputData) { this.inputData = inputData; }
     public void setExplanationText(String explanationText) { this.explanationText = explanationText; }
+    public void setWarning(String warning) { this.warning = warning; }
+    public String getWarning() { return warning; }
     
     @Data
     @NoArgsConstructor
