@@ -1,5 +1,4 @@
 /**
- * @Author: Mukhil Sundararaj
  * @Date:   2025-09-04 16:08:28
  * @Last Modified by:   Mukhil Sundararaj
  * @Last Modified time: 2025-10-24 18:36:50
@@ -35,11 +34,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Don't redirect on 401 for auth endpoints (login/register) - let them handle errors
+    // Don't redirect on 401/403 for auth endpoints (login/register) - let them handle errors
     const isAuthEndpoint = error.config?.url?.includes('/auth/login') || 
                           error.config?.url?.includes('/auth/register');
     
-    if (error.response?.status === 401 && !isAuthEndpoint) {
+    // Handle both 401 (Unauthorized) and 403 (Forbidden) - both indicate auth issues
+    if ((error.response?.status === 401 || error.response?.status === 403) && !isAuthEndpoint) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

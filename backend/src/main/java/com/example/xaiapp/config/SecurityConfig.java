@@ -1,9 +1,3 @@
-/**
- * @Author: Mukhil Sundararaj
- * @Date:   2025-09-04 16:06:50
- * @Last Modified by:   Mukhil Sundararaj
- * @Last Modified time: 2025-09-04 16:14:43
- */
 package com.example.xaiapp.config;
 
 import java.util.Arrays;

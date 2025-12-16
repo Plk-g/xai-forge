@@ -1,9 +1,3 @@
-/**
- * @Author: Mukhil Sundararaj
- * @Date:   2025-09-04 16:07:09
- * @Last Modified by:   Mukhil Sundararaj
- * @Last Modified time: 2025-10-24 15:18:37
- */
 package com.example.xaiapp.service;
 
 import java.io.FileReader;
@@ -120,20 +114,32 @@ public class DatasetService {
         
         Dataset savedDataset = datasetRepository.save(dataset);
         
-        return convertToDto(savedDataset);
+        return convertToDto(savedDataset, userId);
     }
     
     @Transactional(readOnly = true)
     public Optional<DatasetDto> getDataset(Long datasetId, Long userId) {
         return datasetRepository.findByIdAndOwnerId(datasetId, userId)
-            .map(this::convertToDto);
+            .map(dataset -> {
+                // Explicitly initialize headers collection to force Hibernate to load it
+                if (dataset.getHeaders() != null) {
+                    dataset.getHeaders().size(); // Force initialization
+                }
+                return convertToDto(dataset, userId);
+            });
     }
     
     @Transactional(readOnly = true)
     public List<DatasetDto> listUserDatasets(Long userId) {
         return datasetRepository.findByOwnerId(userId)
             .stream()
-            .map(this::convertToDto)
+            .map(dataset -> {
+                // Explicitly initialize headers collection to force Hibernate to load it
+                if (dataset.getHeaders() != null) {
+                    dataset.getHeaders().size(); // Force initialization
+                }
+                return convertToDto(dataset, userId);
+            })
             .toList();
     }
     
@@ -167,14 +173,15 @@ public class DatasetService {
             .orElseThrow(() -> new DatasetNotFoundException(datasetId));
     }
     
-    private DatasetDto convertToDto(Dataset dataset) {
+    private DatasetDto convertToDto(Dataset dataset, Long ownerId) {
         DatasetDto dto = new DatasetDto();
         dto.setId(dataset.getId());
         dto.setFileName(dataset.getFileName());
         dto.setUploadDate(dataset.getUploadDate());
         dto.setHeaders(dataset.getHeaders());
         dto.setRowCount(dataset.getRowCount());
-        dto.setOwnerId(dataset.getOwner().getId());
+        // Use provided ownerId to avoid lazy loading issues
+        dto.setOwnerId(ownerId);
         return dto;
     }
     

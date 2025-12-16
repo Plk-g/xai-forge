@@ -1,9 +1,3 @@
-/**
- * @Author: Mukhil Sundararaj
- * @Date:   2025-10-24 12:14:10
- * @Last Modified by:   Mukhil Sundararaj
- * @Last Modified time: 2025-10-24 15:18:07
- */
 package com.example.xaiapp.strategy;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +15,6 @@ import java.util.Map;
  * This strategy implements the TrainingStrategy interface for
  * classification tasks using Tribuo's LogisticRegressionTrainer.
  * 
- * @author Mukhil Sundararaj
  * @since 1.0.0
  */
 @Component

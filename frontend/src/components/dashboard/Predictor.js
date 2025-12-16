@@ -1,5 +1,4 @@
 /**
- * @Author: Mukhil Sundararaj
  * @Date:   2025-09-04 16:10:46
  * @Last Modified by:   Mukhil Sundararaj
  * @Last Modified time: 2025-10-24 18:36:23
@@ -28,7 +27,10 @@ import {
 import { modelAPI } from '../../api/api';
 import XaiDisplay from './XaiDisplay';
 
-const Predictor = ({ models, loading }) => {
+const Predictor = ({ models = [], loading }) => {
+  // Ensure models is always an array, even if null or undefined is passed
+  const safeModels = Array.isArray(models) ? models : [];
+  
   const [selectedModel, setSelectedModel] = useState('');
   const [modelDetails, setModelDetails] = useState(null);
   const [inputData, setInputData] = useState({});
@@ -56,9 +58,11 @@ const Predictor = ({ models, loading }) => {
       
       // Initialize input data with empty values
       const initialInputData = {};
-      response.data.featureNames.forEach(feature => {
-        initialInputData[feature] = '';
-      });
+      if (response.data?.featureNames && Array.isArray(response.data.featureNames)) {
+        response.data.featureNames.forEach(feature => {
+          initialInputData[feature] = '';
+        });
+      }
       setInputData(initialInputData);
     } catch (err) {
       setError('Failed to load model details');
@@ -138,11 +142,15 @@ const Predictor = ({ models, loading }) => {
                 onChange={(e) => setSelectedModel(e.target.value)}
                 label="Select Model"
               >
-                {models.map((model) => (
-                  <MenuItem key={model.id} value={model.id}>
-                    {model.modelName} ({model.modelType})
-                  </MenuItem>
-                ))}
+                {safeModels && safeModels.length > 0 ? (
+                  safeModels.map((model) => (
+                    <MenuItem key={model.id} value={model.id}>
+                      {model.modelName} ({model.modelType})
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No models available</MenuItem>
+                )}
               </Select>
             </FormControl>
 
@@ -175,18 +183,24 @@ const Predictor = ({ models, loading }) => {
                   Input Data
                 </Typography>
 
-                {modelDetails.featureNames.map((feature) => (
-                  <TextField
-                    key={feature}
-                    fullWidth
-                    label={feature}
-                    value={inputData[feature] || ''}
-                    onChange={(e) => handleInputChange(feature, e.target.value)}
-                    sx={{ mb: 2 }}
-                    type="number"
-                    inputProps={{ step: "any" }}
-                  />
-                ))}
+                {modelDetails.featureNames && Array.isArray(modelDetails.featureNames) && modelDetails.featureNames.length > 0 ? (
+                  modelDetails.featureNames.map((feature) => (
+                    <TextField
+                      key={feature}
+                      fullWidth
+                      label={feature}
+                      value={inputData[feature] || ''}
+                      onChange={(e) => handleInputChange(feature, e.target.value)}
+                      sx={{ mb: 2 }}
+                      type="number"
+                      inputProps={{ step: "any" }}
+                    />
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No features available for this model.
+                  </Typography>
+                )}
 
                 <Button
                   variant="contained"
